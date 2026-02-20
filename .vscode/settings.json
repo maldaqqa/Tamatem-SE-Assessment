@@ -1,0 +1,7 @@
+{
+    "python.defaultInterpreterPath": "${workspaceFolder}/gamevault-backend/venv/Scripts/python.exe",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/gamevault-backend",
+        "${workspaceFolder}/gamevault-backend/venv/Lib/site-packages"
+    ]
+}
