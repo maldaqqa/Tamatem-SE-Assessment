@@ -51,7 +51,7 @@ import { AuthService } from '../../core/services/auth.service';
         </form>
         
         <div class="dev-note">
-          <small>Note: You can log in using the test account (username: <strong>admin</strong>, password: <strong>password</strong>), or register a new account via the <a href="http://localhost:8001/docs" target="_blank" rel="noopener noreferrer">API docs</a>.</small>
+          <small>Note: You can log in using the test account (username: <strong>admin</strong>, password: <strong>password</strong>), or register a new account via the <a href="http://localhost:8000/docs" target="_blank" rel="noopener noreferrer">API docs</a>.</small>
         </div>
       </div>
     </div>
