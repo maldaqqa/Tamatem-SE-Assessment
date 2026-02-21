@@ -11,13 +11,16 @@ from database import get_db
 import models
 import schemas
 
+# hardcoding the secret key here just for the assessment, 
+# normally this should definitely be in an env var!
 SECRET_KEY = "my_super_secret_gamevault_key_for_learning"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ALGORITHM = "HS256" # standard and fast enough
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 # 1 hour seems reasonable for a session
 
 import bcrypt
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
+# using bcrypt here cause its pretty standard and handles salting automatically for us
 def verify_password(plain_password, hashed_password):
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
@@ -34,6 +37,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+# grabbing the user, we need to talk to the db here to verify existence
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

@@ -6,6 +6,8 @@ from database import Base
 
 class User(Base):
     __tablename__ = "users"
+    # using simple ints for ID instead of UUIDs to keep things easier to read/debug
+    # maybe change to UUID if we ever go distributed
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
@@ -18,7 +20,7 @@ class Product(Base):
     title = Column(String, index=True)
     description = Column(String)
     price = Column(Float)
-    location = Column(String) # 'JO' or 'SA'
+    location = Column(String) # assuming its just 'JO' or 'SA' based on the requirements
     
     orders = relationship("Order", back_populates="product")
 

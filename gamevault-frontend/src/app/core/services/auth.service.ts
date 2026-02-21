@@ -11,6 +11,7 @@ export class AuthService {
     private apiUrl = environment.apiUrl;
 
     // Signal to hold auth state reactively
+    // using signals instead of rxjs subjects here cause its the new angular way and much simpler
     isAuthenticated = signal<boolean>(this.hasToken());
 
     constructor(private http: HttpClient, private router: Router) {
@@ -25,6 +26,7 @@ export class AuthService {
     }
 
     login(credentials: { username: string, password: string }): Observable<any> {
+        // fastapi oauth2 expects form data instead of regular json, kinda annoying but it is what it is
         const formData = new URLSearchParams();
         formData.set('username', credentials.username);
         formData.set('password', credentials.password);
@@ -35,6 +37,8 @@ export class AuthService {
         }).pipe(
             tap((res: any) => {
                 if (res.access_token) {
+                    // just chucking the token in localstorage for now. 
+                    // in a real app we might want http only cookies for better security
                     localStorage.setItem('auth_token', res.access_token);
                     this.isAuthenticated.set(true);
                 }

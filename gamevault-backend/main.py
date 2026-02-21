@@ -16,6 +16,8 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI(title="GameVault API", version="1.0.0")
 
 # Configure CORS for the frontend
+# just allowing everything for now so we dont get those annoying CORS errors during dev
+# todo: def need to restrict this in prod to just the frontend url
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], # In production, replace with frontend URL
@@ -27,6 +29,7 @@ app.add_middleware(
 
 @app.post("/register", response_model=schemas.UserResponse)
 def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    # checking if user exists first so we dont get db constraint errors
     db_user = db.query(models.User).filter(models.User.username == user.username).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
@@ -59,7 +62,7 @@ def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth2Passw
 @app.get("/products", response_model=schemas.PaginatedProducts)
 def get_products(
     page: int = Query(1, ge=1, description="Page number"),
-    size: int = Query(10, ge=1, le=100, description="Items per page"),
+    size: int = Query(10, ge=1, le=100, description="Items per page"), # hardcapping at 100 so nobody scrapes the whole db at once
     location: Optional[str] = Query(None, description="Filter by location (JO or SA)"),
     db: Session = Depends(get_db),
     current_user: models.User = Depends(auth.get_current_user)
@@ -103,6 +106,8 @@ def buy_product(
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
         
+    # just a very simple buy flow for now. 
+    # assuming payment is handled somewhere else or its just a stub 
     # Generate the order
     new_order = models.Order(user_id=current_user.id, product_id=product.id)
     db.add(new_order)

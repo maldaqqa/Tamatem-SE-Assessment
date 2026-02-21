@@ -12,6 +12,7 @@ class ProductResponse(ProductBase):
     id: int
 
     class Config:
+        # this tells pydantic to read data even if its an ORM model and not a dict
         from_attributes = True
 
 class UserCreate(BaseModel):
@@ -25,6 +26,7 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
+# basic token schema for fastapi oauth2 implementation
 class Token(BaseModel):
     access_token: str
     token_type: str
